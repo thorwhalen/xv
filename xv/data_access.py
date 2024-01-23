@@ -1,7 +1,4 @@
 """Accessing and preparing arxiv data for the xv project.
-"""
-
-"""Access to ArXiv data.
 
 The data was found at https://alex.macrocosm.so/download
 
