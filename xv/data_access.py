@@ -66,8 +66,8 @@ import pandas as pd
 
 _key_template_kwargs = dict(
     field_patterns=dict(
-        kind='\w+', number=r'\d+'
-    ),  # the pattern to match is an integer
+        kind=r'\w+', number=r'\d+'  # the pattern to match is an integer
+    ),
     from_str_funcs=dict(number=int),  # transform integer string into actual integer
 )
 _parquet_codec_end_pipe = (
