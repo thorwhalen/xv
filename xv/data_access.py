@@ -56,8 +56,8 @@ _raw_store = Pipe(
 )
 
 urls = {
-    'titles': 'https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link',
-    'abstracts': 'https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link',
+    "titles": "https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link",
+    "abstracts": "https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link",
 }
 raw_sources = FuncReader({name: partial(_raw_store, url) for name, url in urls.items()})
 
@@ -69,7 +69,7 @@ import pandas as pd
 
 _key_template_kwargs = dict(
     field_patterns=dict(
-        kind=r'\w+', number=r'\d+'  # the pattern to match is an integer
+        kind=r"\w+", number=r"\d+"  # the pattern to match is an integer
     ),
     from_str_funcs=dict(number=int),  # transform integer string into actual integer
 )
@@ -79,33 +79,33 @@ _parquet_codec_end_pipe = (
 )
 
 titles_key_template = KeyTemplate(
-    'titles_{number:d}.parquet',  # this is the template/pattern for the keys
+    "titles_{number:d}.parquet",  # this is the template/pattern for the keys
     **_key_template_kwargs,
 )
 titles_parquet_codec = Pipe(
-    titles_key_template.filt_iter('str'),  # filter in only keys that match the pattern
-    titles_key_template.key_codec('single'),  # just get a single integer as the key
+    titles_key_template.filt_iter("str"),  # filter in only keys that match the pattern
+    titles_key_template.key_codec("single"),  # just get a single integer as the key
     *_parquet_codec_end_pipe,
 )
 abstracts_key_template = KeyTemplate(
-    'abstracts_{number:d}.parquet',  # this is the template/pattern for the keys
+    "abstracts_{number:d}.parquet",  # this is the template/pattern for the keys
     **_key_template_kwargs,
 )
 abstracts_parquet_codec = Pipe(
     abstracts_key_template.filt_iter(
-        'str'
+        "str"
     ),  # filter in only keys that match the pattern
-    abstracts_key_template.key_codec('single'),  # just get a single integer as the key
+    abstracts_key_template.key_codec("single"),  # just get a single integer as the key
     *_parquet_codec_end_pipe,
 )
 
 
 def _kind_router(k, v):
-    if k.startswith('titles'):
+    if k.startswith("titles"):
         return titles_parquet_codec(v)
-    elif k.startswith('abstracts'):
+    elif k.startswith("abstracts"):
         return abstracts_parquet_codec(v)
-    raise KeyError(f'Invalid key: {k}')
+    raise KeyError(f"Invalid key: {k}")
 
 
 # --------------------------------------------------------------------------------------
@@ -115,7 +115,7 @@ sources = wrap_kvs(raw_sources, postget=_kind_router)
 
 arxiv_url_template = "https://arxiv.org/{resource}/{doi}"
 
-ArxivResource = Literal['abs', 'pdf', 'format', 'src', 'cits', 'html']
+ArxivResource = Literal["abs", "pdf", "format", "src", "cits", "html"]
 
 resource_descriptions = {
     "abs": "Main page of article. Contains links to all other relevant information.",
@@ -135,10 +135,10 @@ resource_descriptions = {
 # This is what we're recording underneath, but the arXiv also has its own DOI system.
 # See https://arxiv.org/help/doi
 OFFICIAL_DOI_PATTERN = re.compile(
-    r'^(?:doi:|doi://)?'  # Optional DOI protocol prefix
-    r'(10\.\d{4,9}/'  # DOI prefix: "10." followed by 4–9 digits and a slash
-    r'[-._;()/:A-Za-z0-9]+)'  # DOI suffix: one or more allowed characters
-    r'$',
+    r"^(?:doi:|doi://)?"  # Optional DOI protocol prefix
+    r"(10\.\d{4,9}/"  # DOI prefix: "10." followed by 4–9 digits and a slash
+    r"[-._;()/:A-Za-z0-9]+)"  # DOI suffix: one or more allowed characters
+    r"$",
     re.IGNORECASE,
 )
 
@@ -170,10 +170,10 @@ def extract_doi(s: str) -> Optional[str]:
 
 # arXiv DOI
 ARXIV_DOI_PATTERN = re.compile(
-    r'^(?:doi:|doi://)?'  # Optional DOI protocol prefix
-    r'(10\.48550/arXiv\.'  # DOI prefix and literal "arXiv."
-    r'\d{4}\.\d{4,5})'  # YYMM.number (4 or 5 digits), no version
-    r'$',
+    r"^(?:doi:|doi://)?"  # Optional DOI protocol prefix
+    r"(10\.48550/arXiv\."  # DOI prefix and literal "arXiv."
+    r"\d{4}\.\d{4,5})"  # YYMM.number (4 or 5 digits), no version
+    r"$",
     re.IGNORECASE,
 )
 
@@ -209,31 +209,31 @@ def extract_arxiv_doi(s: str) -> Optional[str]:
 # Add helper functions
 def parse_arxiv_uri(uri: str) -> dict:
     # Parses a DOI or a full URL into a dict with 'doi' and optionally 'resource'
-    if uri.startswith('http'):
-        if uri.startswith('https://arxiv.org/'):
-            parts = uri[len('https://arxiv.org/') :].split('/', 1)
+    if uri.startswith("http"):
+        if uri.startswith("https://arxiv.org/"):
+            parts = uri[len("https://arxiv.org/") :].split("/", 1)
             if len(parts) == 2:
-                return {'resource': parts[0], 'doi': parts[1]}
-        if uri.startswith('https://ar5iv.labs.arxiv.org/html/'):
-            doi = uri[len('https://ar5iv.labs.arxiv.org/html/') :]
-            return {'resource': 'html', 'doi': doi}
+                return {"resource": parts[0], "doi": parts[1]}
+        if uri.startswith("https://ar5iv.labs.arxiv.org/html/"):
+            doi = uri[len("https://ar5iv.labs.arxiv.org/html/") :]
+            return {"resource": "html", "doi": doi}
     elif doi := extract_doi(uri):
-        return {'doi': doi}
+        return {"doi": doi}
     return None
 
 
 def compile_arxiv_uri(data: dict) -> str:
     # Compiles a URI from a dict containing 'doi' and a 'resource'
-    doi = data.get('doi', None)
+    doi = data.get("doi", None)
     if doi is None:
         raise ValueError("Missing DOI in the data dictionary.")
-    resource = data.get('resource', None)
+    resource = data.get("resource", None)
     if resource is None:
-        return f'{doi}'
-    elif resource == 'html':
-        return f'https://ar5iv.labs.arxiv.org/html/{doi}'
+        return f"{doi}"
+    elif resource == "html":
+        return f"https://ar5iv.labs.arxiv.org/html/{doi}"
     else:
-        return f'https://arxiv.org/{resource}/{doi}'
+        return f"https://arxiv.org/{resource}/{doi}"
 
 
 def return_input(x):
@@ -246,7 +246,7 @@ def return_none(x):
 
 def arxiv_url(
     uri: str,
-    resource: ArxivResource = 'abs',
+    resource: ArxivResource = "abs",
     *,
     if_unparsable: Optional[Callable] = return_input,
 ) -> str:
@@ -272,7 +272,7 @@ def arxiv_url(
     """
     parsed = parse_arxiv_uri(uri)
     if parsed:
-        parsed['resource'] = resource  # override or add the desired resource
+        parsed["resource"] = resource  # override or add the desired resource
         return compile_arxiv_uri(parsed)
     else:
         if not if_unparsable:

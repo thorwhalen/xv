@@ -10,7 +10,7 @@ from graze import (
     GrazeReturningFilepaths as _GrazeReturningFilepaths,
 )
 
-package_name = 'xv'
+package_name = "xv"
 
 
 MappingFactory = Callable[..., Mapping]
@@ -18,7 +18,7 @@ MappingFactory = Callable[..., Mapping]
 
 DFLT_DATA_DIR = get_app_data_folder(package_name, ensure_exists=True)
 GRAZE_DATA_DIR = get_app_data_folder(
-    os.path.join(package_name, 'graze'), ensure_exists=True
+    os.path.join(package_name, "graze"), ensure_exists=True
 )
 graze_kwargs = dict(
     rootdir=GRAZE_DATA_DIR,
@@ -31,4 +31,4 @@ GrazeReturningFilepaths = partial(_GrazeReturningFilepaths, **graze_kwargs)
 
 
 def get_app_folder(name, *, ensure_exists=True):
-    return get_app_data_folder(f'{package_name}/{name}', ensure_exists=ensure_exists)
+    return get_app_data_folder(f"{package_name}/{name}", ensure_exists=ensure_exists)
