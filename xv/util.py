@@ -30,5 +30,5 @@ Graze = partial(_Graze, **graze_kwargs)
 GrazeReturningFilepaths = partial(_GrazeReturningFilepaths, **graze_kwargs)
 
 
-def get_app_folder(name, *, ensure_exists=True):
+def get_xv_app_folder(name, *, ensure_exists=True):
     return get_app_data_folder(f"{package_name}/{name}", ensure_exists=ensure_exists)
