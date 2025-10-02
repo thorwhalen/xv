@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xv.data_access &mdash; xv 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/xv.html">xv</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/xv/data_access.html">xv.data_access</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_docs/xv/util.html">xv.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">xv.data_access</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for xv.data_access</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Accessing and preparing arxiv data for the xv project.</span>
+
+<span class="sd">The data was found at https://alex.macrocosm.so/download</span>
+
+<span class="sd">At the point of writing this, my attempts enable `graze` to automatically confirm</span>
+<span class="sd">download in the googledrive downloads (which, when downloading too-big files,</span>
+<span class="sd">will tell the user it can&#39;t scan the file and ask the user to confirm the download).</span>
+
+<span class="sd">Therefore, the following files need to be downloaded manually:</span>
+<span class="sd">* **titles**: https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link</span>
+<span class="sd">* **abstracts**: https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link</span>
+
+<span class="sd">(If those urls don&#39;t work, perhaps they were updated: See here: https://alex.macrocosm.so/download .)</span>
+
+<span class="sd">You can then copy them over to the place graze will look for by doing:</span>
+
+<span class="sd">```python</span>
+<span class="sd">from pathlib import Path</span>
+<span class="sd">from imbed.util import Graze</span>
+<span class="sd">from imbed.mdat.arxiv import urls</span>
+
+<span class="sd">g[urls[&#39;titles&#39;]] = Path(&#39;TITLES_DATA_LOCAL_FILEPATH&#39;).read_bytes()</span>
+<span class="sd">g[urls[&#39;abstracts&#39;]] = Path(&#39;ABSTRACTS_DATA_LOCAL_FILEPATH&#39;).read_bytes()</span>
+<span class="sd">```</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">KT</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">lru_cache</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dol</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FilesOfZip</span><span class="p">,</span>
+    <span class="n">remove_mac_junk_from_zip</span><span class="p">,</span>
+    <span class="n">add_ipython_key_completions</span><span class="p">,</span>
+    <span class="n">Pipe</span><span class="p">,</span>
+    <span class="n">cached_keys</span><span class="p">,</span>
+    <span class="n">wrap_kvs</span><span class="p">,</span>
+    <span class="n">KeyCodecs</span><span class="p">,</span>
+    <span class="n">FuncReader</span><span class="p">,</span>
+    <span class="n">KeyTemplate</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dol.kv_codecs</span><span class="w"> </span><span class="kn">import</span> <span class="n">common_prefix_keys_wrap</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">xv.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">grazed_path</span>
+
+<span class="c1"># from tabled import ColumnOrientedMapping</span>
+
+<span class="n">_raw_store</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span>
+    <span class="n">grazed_path</span><span class="p">,</span>
+    <span class="n">FilesOfZip</span><span class="p">,</span>
+    <span class="n">remove_mac_junk_from_zip</span><span class="p">,</span>
+    <span class="n">common_prefix_keys_wrap</span><span class="p">,</span>
+    <span class="n">add_ipython_key_completions</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;titles&quot;</span><span class="p">:</span> <span class="s2">&quot;https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;abstracts&quot;</span><span class="p">:</span> <span class="s2">&quot;https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">raw_sources</span> <span class="o">=</span> <span class="n">FuncReader</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="n">partial</span><span class="p">(</span><span class="n">_raw_store</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">url</span> <span class="ow">in</span> <span class="n">urls</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span>
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<span class="c1"># The data-specific part</span>
+<span class="c1"># TODO: Ugly and unclean. Maybe just do with wrap_kvs and lambdas?</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">_key_template_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">field_patterns</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">kind</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\w+&quot;</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;\d+&quot;</span>  <span class="c1"># the pattern to match is an integer</span>
+    <span class="p">),</span>
+    <span class="n">from_str_funcs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">number</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>  <span class="c1"># transform integer string into actual integer</span>
+<span class="p">)</span>
+<span class="n">_parquet_codec_end_pipe</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">wrap_kvs</span><span class="p">(</span><span class="n">obj_of_data</span><span class="o">=</span><span class="n">Pipe</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_parquet</span><span class="p">)),</span>  <span class="c1"># get a dataframe</span>
+    <span class="n">cached_keys</span><span class="p">(</span><span class="n">keys_cache</span><span class="o">=</span><span class="nb">sorted</span><span class="p">),</span>  <span class="c1"># sort the keys when iterating</span>
+<span class="p">)</span>
+
+<span class="n">titles_key_template</span> <span class="o">=</span> <span class="n">KeyTemplate</span><span class="p">(</span>
+    <span class="s2">&quot;titles_</span><span class="si">{number:d}</span><span class="s2">.parquet&quot;</span><span class="p">,</span>  <span class="c1"># this is the template/pattern for the keys</span>
+    <span class="o">**</span><span class="n">_key_template_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">titles_parquet_codec</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span>
+    <span class="n">titles_key_template</span><span class="o">.</span><span class="n">filt_iter</span><span class="p">(</span><span class="s2">&quot;str&quot;</span><span class="p">),</span>  <span class="c1"># filter in only keys that match the pattern</span>
+    <span class="n">titles_key_template</span><span class="o">.</span><span class="n">key_codec</span><span class="p">(</span><span class="s2">&quot;single&quot;</span><span class="p">),</span>  <span class="c1"># just get a single integer as the key</span>
+    <span class="o">*</span><span class="n">_parquet_codec_end_pipe</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">abstracts_key_template</span> <span class="o">=</span> <span class="n">KeyTemplate</span><span class="p">(</span>
+    <span class="s2">&quot;abstracts_</span><span class="si">{number:d}</span><span class="s2">.parquet&quot;</span><span class="p">,</span>  <span class="c1"># this is the template/pattern for the keys</span>
+    <span class="o">**</span><span class="n">_key_template_kwargs</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">abstracts_parquet_codec</span> <span class="o">=</span> <span class="n">Pipe</span><span class="p">(</span>
+    <span class="n">abstracts_key_template</span><span class="o">.</span><span class="n">filt_iter</span><span class="p">(</span>
+        <span class="s2">&quot;str&quot;</span>
+    <span class="p">),</span>  <span class="c1"># filter in only keys that match the pattern</span>
+    <span class="n">abstracts_key_template</span><span class="o">.</span><span class="n">key_codec</span><span class="p">(</span><span class="s2">&quot;single&quot;</span><span class="p">),</span>  <span class="c1"># just get a single integer as the key</span>
+    <span class="o">*</span><span class="n">_parquet_codec_end_pipe</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_kind_router</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;titles&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">titles_parquet_codec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;abstracts&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">abstracts_parquet_codec</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid key: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<span class="c1"># url manipulations</span>
+
+<span class="n">sources</span> <span class="o">=</span> <span class="n">wrap_kvs</span><span class="p">(</span><span class="n">raw_sources</span><span class="p">,</span> <span class="n">postget</span><span class="o">=</span><span class="n">_kind_router</span><span class="p">)</span>
+
+<span class="n">arxiv_url_template</span> <span class="o">=</span> <span class="s2">&quot;https://arxiv.org/</span><span class="si">{resource}</span><span class="s2">/</span><span class="si">{doi}</span><span class="s2">&quot;</span>
+
+<span class="n">ArxivResource</span> <span class="o">=</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;abs&quot;</span><span class="p">,</span> <span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;src&quot;</span><span class="p">,</span> <span class="s2">&quot;cits&quot;</span><span class="p">,</span> <span class="s2">&quot;html&quot;</span><span class="p">]</span>
+
+<span class="n">resource_descriptions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;abs&quot;</span><span class="p">:</span> <span class="s2">&quot;Main page of article. Contains links to all other relevant information.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pdf&quot;</span><span class="p">:</span> <span class="s2">&quot;Direct link to article pdf&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;Page giving access to other formats&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;src&quot;</span><span class="p">:</span> <span class="s2">&quot;Access to the original source files submitted by the authors.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cits&quot;</span><span class="p">:</span> <span class="s2">&quot;Tracks citations of the article across various platforms and databases.&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;html&quot;</span><span class="p">:</span> <span class="s2">&quot;Link to the ar5iv html page for the article.&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># --------------------------------------------------------------------------------------</span>
+<span class="c1"># TODO: Redo this compile and parsing with dol.StrTupleDict</span>
+
+<span class="c1"># There&#39;s an official DOI, as defined by the International DOI Foundation (IDF).</span>
+<span class="c1"># See https://www.doi.org/doi_handbook/2_Numbering.html</span>
+<span class="c1"># This is what we&#39;re recording underneath, but the arXiv also has its own DOI system.</span>
+<span class="c1"># See https://arxiv.org/help/doi</span>
+<span class="n">OFFICIAL_DOI_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;^(?:doi:|doi://)?&quot;</span>  <span class="c1"># Optional DOI protocol prefix</span>
+    <span class="sa">r</span><span class="s2">&quot;(10\.\d{4,9}/&quot;</span>  <span class="c1"># DOI prefix: &quot;10.&quot; followed by 4–9 digits and a slash</span>
+    <span class="sa">r</span><span class="s2">&quot;[-._;()/:A-Za-z0-9]+)&quot;</span>  <span class="c1"># DOI suffix: one or more allowed characters</span>
+    <span class="sa">r</span><span class="s2">&quot;$&quot;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="extract_doi">
+<a class="viewcode-back" href="../../module_docs/xv/data_access.html#xv.data_access.extract_doi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_doi</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts and returns a valid DOI from the input string if present,</span>
+<span class="sd">    otherwise returns None. Supports strings of the form:</span>
+<span class="sd">      - &quot;10.1234/abcd&quot;</span>
+<span class="sd">      - &quot;doi:10.1234/abcd&quot;</span>
+<span class="sd">      - &quot;doi://10.1234/abcd&quot;</span>
+
+<span class="sd">    :param s: Input string potentially containing a DOI.</span>
+<span class="sd">    :return: The DOI without any protocol prefix, or None if not a valid DOI.</span>
+
+<span class="sd">    &gt;&gt;&gt; extract_doi(&quot;10.1000/182&quot;)</span>
+<span class="sd">    &#39;10.1000/182&#39;</span>
+<span class="sd">    &gt;&gt;&gt; extract_doi(&quot;doi:10.1234/ABC-123&quot;)</span>
+<span class="sd">    &#39;10.1234/ABC-123&#39;</span>
+<span class="sd">    &gt;&gt;&gt; extract_doi(&quot;random string&quot;) is None</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">OFFICIAL_DOI_PATTERN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># arXiv DOI</span>
+<span class="n">ARXIV_DOI_PATTERN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sa">r</span><span class="s2">&quot;^(?:doi:|doi://)?&quot;</span>  <span class="c1"># Optional DOI protocol prefix</span>
+    <span class="sa">r</span><span class="s2">&quot;(10\.48550/arXiv\.&quot;</span>  <span class="c1"># DOI prefix and literal &quot;arXiv.&quot;</span>
+    <span class="sa">r</span><span class="s2">&quot;\d</span><span class="si">{4}</span><span class="s2">\.\d{4,5})&quot;</span>  <span class="c1"># YYMM.number (4 or 5 digits), no version</span>
+    <span class="sa">r</span><span class="s2">&quot;$&quot;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="extract_arxiv_doi">
+<a class="viewcode-back" href="../../module_docs/xv/data_access.html#xv.data_access.extract_arxiv_doi">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_arxiv_doi</span><span class="p">(</span><span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Extracts and returns a valid arXiv-assigned DOI from the input string if present,</span>
+<span class="sd">    otherwise returns None. Supports DOIs of the form:</span>
+<span class="sd">      - &quot;10.48550/arXiv.2202.01037&quot;</span>
+<span class="sd">      - &quot;doi:10.48550/arXiv.2202.01037&quot;</span>
+<span class="sd">      - &quot;doi://10.48550/arXiv.2202.01037&quot;</span>
+
+<span class="sd">    The DOI always uses the prefix 10.48550 and the base arXiv identifier (no version).</span>
+
+<span class="sd">    &gt;&gt;&gt; extract_arxiv_doi(&quot;10.48550/arXiv.2505.07987&quot;)</span>
+<span class="sd">    &#39;10.48550/arXiv.2505.07987&#39;</span>
+<span class="sd">    &gt;&gt;&gt; extract_arxiv_doi(&quot;doi:10.48550/arXiv.2302.11894&quot;)</span>
+<span class="sd">    &#39;10.48550/arXiv.2302.11894&#39;</span>
+<span class="sd">    &gt;&gt;&gt; extract_arxiv_doi(&quot;doi://10.48550/arXiv.1234.56789&quot;)</span>
+<span class="sd">    &#39;10.48550/arXiv.1234.56789&#39;</span>
+<span class="sd">    &gt;&gt;&gt; extract_arxiv_doi(&quot;10.48550/arXiv.2202.01037v2&quot;) is None</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; extract_arxiv_doi(&quot;arXiv:2202.01037&quot;) is None</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">ARXIV_DOI_PATTERN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># Add helper functions</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_arxiv_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="c1"># Parses a DOI or a full URL into a dict with &#39;doi&#39; and optionally &#39;resource&#39;</span>
+    <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://arxiv.org/&quot;</span><span class="p">):</span>
+            <span class="n">parts</span> <span class="o">=</span> <span class="n">uri</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;https://arxiv.org/&quot;</span><span class="p">)</span> <span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;resource&quot;</span><span class="p">:</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;doi&quot;</span><span class="p">:</span> <span class="n">parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="n">uri</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://ar5iv.labs.arxiv.org/html/&quot;</span><span class="p">):</span>
+            <span class="n">doi</span> <span class="o">=</span> <span class="n">uri</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;https://ar5iv.labs.arxiv.org/html/&quot;</span><span class="p">)</span> <span class="p">:]</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;resource&quot;</span><span class="p">:</span> <span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;doi&quot;</span><span class="p">:</span> <span class="n">doi</span><span class="p">}</span>
+    <span class="k">elif</span> <span class="n">doi</span> <span class="o">:=</span> <span class="n">extract_doi</span><span class="p">(</span><span class="n">uri</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;doi&quot;</span><span class="p">:</span> <span class="n">doi</span><span class="p">}</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compile_arxiv_uri</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># Compiles a URI from a dict containing &#39;doi&#39; and a &#39;resource&#39;</span>
+    <span class="n">doi</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;doi&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">doi</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Missing DOI in the data dictionary.&quot;</span><span class="p">)</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;resource&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">resource</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="n">resource</span> <span class="o">==</span> <span class="s2">&quot;html&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;https://ar5iv.labs.arxiv.org/html/</span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;https://arxiv.org/</span><span class="si">{</span><span class="n">resource</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">doi</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">return_input</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">return_none</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<div class="viewcode-block" id="arxiv_url">
+<a class="viewcode-back" href="../../module_docs/xv/data_access.html#xv.data_access.arxiv_url">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">arxiv_url</span><span class="p">(</span>
+    <span class="n">uri</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">resource</span><span class="p">:</span> <span class="n">ArxivResource</span> <span class="o">=</span> <span class="s2">&quot;abs&quot;</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">if_unparsable</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Callable</span><span class="p">]</span> <span class="o">=</span> <span class="n">return_input</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the URL for the given URI translated to the specified resource.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        uri (str): The URI to be parsed ({doi}, https://arxiv.org/{resource}/{doi}, or https://ar5iv.labs.arxiv.org/html/{doi})</span>
+<span class="sd">        resource (ArxivResource): The desired resource type.</span>
+<span class="sd">        if_unparsable (Optional[Callable]): Function to call if the URI cannot be parsed.</span>
+<span class="sd">            If None, it will raise a ValueError.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The compiled URL for the specified resource.</span>
+
+<span class="sd">    &gt;&gt;&gt; arxiv_url(&#39;https://arxiv.org/abs/10.3233&#39;, &#39;pdf&#39;)</span>
+<span class="sd">    &#39;https://arxiv.org/pdf/10.3233&#39;</span>
+<span class="sd">    &gt;&gt;&gt; arxiv_url(&#39;https://arxiv.org/abs/10.3233&#39;, &#39;html&#39;)</span>
+<span class="sd">    &#39;https://ar5iv.labs.arxiv.org/html/10.3233&#39;</span>
+<span class="sd">    &gt;&gt;&gt; arxiv_url(&#39;10.3233&#39;, &#39;abs&#39;)</span>
+<span class="sd">    &#39;10.3233&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parsed</span> <span class="o">=</span> <span class="n">parse_arxiv_uri</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">parsed</span><span class="p">:</span>
+        <span class="n">parsed</span><span class="p">[</span><span class="s2">&quot;resource&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">resource</span>  <span class="c1"># override or add the desired resource</span>
+        <span class="k">return</span> <span class="n">compile_arxiv_uri</span><span class="p">(</span><span class="n">parsed</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">if_unparsable</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;This is not arxiv-parsable: </span><span class="si">{</span><span class="n">uri</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">if_unparsable</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

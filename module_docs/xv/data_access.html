@@ -1,0 +1,225 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>xv.data_access &mdash; xv 0.1.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=a58bc63e"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../_static/toggleprompt.js?v=d7ede5d2"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="xv.util" href="util.html" />
+    <link rel="prev" title="xv" href="../xv.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            xv
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../xv.html">xv</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">xv.data_access</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#xv.data_access.arxiv_url"><code class="docutils literal notranslate"><span class="pre">arxiv_url()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xv.data_access.extract_arxiv_doi"><code class="docutils literal notranslate"><span class="pre">extract_arxiv_doi()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xv.data_access.extract_doi"><code class="docutils literal notranslate"><span class="pre">extract_doi()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="util.html">xv.util</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">xv</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">xv.data_access</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/module_docs/xv/data_access.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-xv.data_access">
+<span id="xv-data-access"></span><h1>xv.data_access<a class="headerlink" href="#module-xv.data_access" title="Link to this heading"></a></h1>
+<p>Accessing and preparing arxiv data for the xv project.</p>
+<p>The data was found at <a class="reference external" href="https://alex.macrocosm.so/download">https://alex.macrocosm.so/download</a></p>
+<p>At the point of writing this, my attempts enable <cite>graze</cite> to automatically confirm
+download in the googledrive downloads (which, when downloading too-big files,
+will tell the user it can’t scan the file and ask the user to confirm the download).</p>
+<p>Therefore, the following files need to be downloaded manually:
+* <strong>titles</strong>: <a class="reference external" href="https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link">https://drive.google.com/file/d/1Ul5mPePtoPKHZkH5Rm6dWKAO11dG98GN/view?usp=share_link</a>
+* <strong>abstracts</strong>: <a class="reference external" href="https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link">https://drive.google.com/file/d/1g3K-wlixFxklTSUQNZKpEgN4WNTFTPIZ/view?usp=share_link</a></p>
+<p>(If those urls don’t work, perhaps they were updated: See here: <a class="reference external" href="https://alex.macrocosm.so/download">https://alex.macrocosm.so/download</a> .)</p>
+<p>You can then copy them over to the place graze will look for by doing:</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python
+from pathlib import Path
+from imbed.util import Graze
+from imbed.mdat.arxiv import urls</p>
+<p>g[urls[‘titles’]] = Path(‘TITLES_DATA_LOCAL_FILEPATH’).read_bytes()
+g[urls[‘abstracts’]] = Path(‘ABSTRACTS_DATA_LOCAL_FILEPATH’).read_bytes()
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="xv.data_access.arxiv_url">
+<span class="sig-prename descclassname"><span class="pre">xv.data_access.</span></span><span class="sig-name descname"><span class="pre">arxiv_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri:</span> <span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource:</span> <span class="pre">~typing.Literal['abs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'format'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'src'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'cits'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">'html']</span> <span class="pre">=</span> <span class="pre">'abs'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">if_unparsable:</span> <span class="pre">~typing.Callable</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">&lt;function</span> <span class="pre">return_input&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../../_modules/xv/data_access.html#arxiv_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xv.data_access.arxiv_url" title="Link to this definition"></a></dt>
+<dd><p>Return the URL for the given URI translated to the specified resource.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>uri</strong> (<em>str</em>) – The URI to be parsed ({doi}, <a class="reference external" href="https://arxiv.org">https://arxiv.org</a>/{resource}/{doi}, or <a class="reference external" href="https://ar5iv.labs.arxiv.org/html">https://ar5iv.labs.arxiv.org/html</a>/{doi})</p></li>
+<li><p><strong>resource</strong> (<em>ArxivResource</em>) – The desired resource type.</p></li>
+<li><p><strong>if_unparsable</strong> (<em>Optional</em><em>[</em><em>Callable</em><em>]</em>) – Function to call if the URI cannot be parsed.
+If None, it will raise a ValueError.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The compiled URL for the specified resource.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arxiv_url</span><span class="p">(</span><span class="s1">&#39;https://arxiv.org/abs/10.3233&#39;</span><span class="p">,</span> <span class="s1">&#39;pdf&#39;</span><span class="p">)</span>
+<span class="go">&#39;https://arxiv.org/pdf/10.3233&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arxiv_url</span><span class="p">(</span><span class="s1">&#39;https://arxiv.org/abs/10.3233&#39;</span><span class="p">,</span> <span class="s1">&#39;html&#39;</span><span class="p">)</span>
+<span class="go">&#39;https://ar5iv.labs.arxiv.org/html/10.3233&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">arxiv_url</span><span class="p">(</span><span class="s1">&#39;10.3233&#39;</span><span class="p">,</span> <span class="s1">&#39;abs&#39;</span><span class="p">)</span>
+<span class="go">&#39;10.3233&#39;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xv.data_access.extract_arxiv_doi">
+<span class="sig-prename descclassname"><span class="pre">xv.data_access.</span></span><span class="sig-name descname"><span class="pre">extract_arxiv_doi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/xv/data_access.html#extract_arxiv_doi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xv.data_access.extract_arxiv_doi" title="Link to this definition"></a></dt>
+<dd><p>Extracts and returns a valid arXiv-assigned DOI from the input string if present,
+otherwise returns None. Supports DOIs of the form:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“10.48550/arXiv.2202.01037”</p></li>
+<li><p>“doi:10.48550/arXiv.2202.01037”</p></li>
+<li><p>“doi://10.48550/arXiv.2202.01037”</p></li>
+</ul>
+</div></blockquote>
+<p>The DOI always uses the prefix 10.48550 and the base arXiv identifier (no version).</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">extract_arxiv_doi</span><span class="p">(</span><span class="s2">&quot;10.48550/arXiv.2505.07987&quot;</span><span class="p">)</span>
+<span class="go">&#39;10.48550/arXiv.2505.07987&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_arxiv_doi</span><span class="p">(</span><span class="s2">&quot;doi:10.48550/arXiv.2302.11894&quot;</span><span class="p">)</span>
+<span class="go">&#39;10.48550/arXiv.2302.11894&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_arxiv_doi</span><span class="p">(</span><span class="s2">&quot;doi://10.48550/arXiv.1234.56789&quot;</span><span class="p">)</span>
+<span class="go">&#39;10.48550/arXiv.1234.56789&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_arxiv_doi</span><span class="p">(</span><span class="s2">&quot;10.48550/arXiv.2202.01037v2&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_arxiv_doi</span><span class="p">(</span><span class="s2">&quot;arXiv:2202.01037&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="xv.data_access.extract_doi">
+<span class="sig-prename descclassname"><span class="pre">xv.data_access.</span></span><span class="sig-name descname"><span class="pre">extract_doi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../../_modules/xv/data_access.html#extract_doi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#xv.data_access.extract_doi" title="Link to this definition"></a></dt>
+<dd><p>Extracts and returns a valid DOI from the input string if present,
+otherwise returns None. Supports strings of the form:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“10.1234/abcd”</p></li>
+<li><p>“doi:10.1234/abcd”</p></li>
+<li><p>“doi://10.1234/abcd”</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>s</strong> – Input string potentially containing a DOI.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The DOI without any protocol prefix, or None if not a valid DOI.</p>
+</dd>
+</dl>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">extract_doi</span><span class="p">(</span><span class="s2">&quot;10.1000/182&quot;</span><span class="p">)</span>
+<span class="go">&#39;10.1000/182&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_doi</span><span class="p">(</span><span class="s2">&quot;doi:10.1234/ABC-123&quot;</span><span class="p">)</span>
+<span class="go">&#39;10.1234/ABC-123&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">extract_doi</span><span class="p">(</span><span class="s2">&quot;random string&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../xv.html" class="btn btn-neutral float-left" title="xv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="util.html" class="btn btn-neutral float-right" title="xv.util" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright NO COPYRIGHT.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
