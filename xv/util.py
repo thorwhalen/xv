@@ -3,7 +3,7 @@
 import os
 from functools import partial, cached_property
 from typing import Mapping, Callable, Optional, TypeVar, KT, Iterable, Any
-from config2py import get_app_data_folder
+from config2py import get_app_config_folder
 from graze import (
     graze as _graze,
     Graze as _Graze,
@@ -16,8 +16,8 @@ package_name = "xv"
 MappingFactory = Callable[..., Mapping]
 
 
-DFLT_DATA_DIR = get_app_data_folder(package_name, ensure_exists=True)
-GRAZE_DATA_DIR = get_app_data_folder(
+DFLT_DATA_DIR = get_app_config_folder(package_name, ensure_exists=True)
+GRAZE_DATA_DIR = get_app_config_folder(
     os.path.join(package_name, "graze"), ensure_exists=True
 )
 graze_kwargs = dict(
@@ -31,4 +31,4 @@ GrazeReturningFilepaths = partial(_GrazeReturningFilepaths, **graze_kwargs)
 
 
 def get_xv_app_folder(name, *, ensure_exists=True):
-    return get_app_data_folder(f"{package_name}/{name}", ensure_exists=ensure_exists)
+    return get_app_config_folder(f"{package_name}/{name}", ensure_exists=ensure_exists)
