@@ -26,7 +26,8 @@ g[urls['abstracts']] = Path('ABSTRACTS_DATA_LOCAL_FILEPATH').read_bytes()
 """
 
 import re
-from typing import Mapping, Literal, Iterable, KT, Union, Optional, Callable
+from typing import Literal, KT, Union, Optional
+from collections.abc import Mapping, Iterable, Callable
 from functools import partial, lru_cache
 import io
 from itertools import chain
@@ -143,7 +144,7 @@ OFFICIAL_DOI_PATTERN = re.compile(
 )
 
 
-def extract_doi(s: str) -> Optional[str]:
+def extract_doi(s: str) -> str | None:
     """
     Extracts and returns a valid DOI from the input string if present,
     otherwise returns None. Supports strings of the form:
@@ -178,7 +179,7 @@ ARXIV_DOI_PATTERN = re.compile(
 )
 
 
-def extract_arxiv_doi(s: str) -> Optional[str]:
+def extract_arxiv_doi(s: str) -> str | None:
     """
     Extracts and returns a valid arXiv-assigned DOI from the input string if present,
     otherwise returns None. Supports DOIs of the form:
@@ -248,7 +249,7 @@ def arxiv_url(
     uri: str,
     resource: ArxivResource = "abs",
     *,
-    if_unparsable: Optional[Callable] = return_input,
+    if_unparsable: Callable | None = return_input,
 ) -> str:
     """
     Return the URL for the given URI translated to the specified resource.

@@ -2,7 +2,8 @@
 
 import os
 from functools import partial, cached_property
-from typing import Mapping, Callable, Optional, TypeVar, KT, Iterable, Any
+from typing import Optional, TypeVar, KT, Any
+from collections.abc import Mapping, Callable, Iterable
 from config2py import get_app_config_folder
 from graze import (
     graze as _graze,
