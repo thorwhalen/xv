@@ -1,0 +1,14 @@
+# xv
+
+> Access to arxiv data
+
+
+## Pages in this subsection
+
+- [xv](xv.html.md): Access to arxiv resources
+- [xv.data_access](xv.data_access.html.md): Accessing and preparing arxiv data for the xv project.
+- [xv.util](xv.util.html.md): | &#96;get_xv_app_folder&#96;(name, &#92;&#42;&#91;, ensure_exists&#93;)   |    |
+
+## Optional
+
+- [Top-level llms.txt](../llms.txt): Complete documentation index.

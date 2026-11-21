@@ -1,0 +1,18 @@
+xv.data\_access
+===============
+
+.. automodule:: xv.data_access
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      arxiv_url
+      compile_arxiv_uri
+      extract_arxiv_doi
+      extract_doi
+      parse_arxiv_uri
+      return_input
+      return_none
+   

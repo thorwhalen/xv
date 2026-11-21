@@ -1,0 +1,12 @@
+xv.util
+=======
+
+.. automodule:: xv.util
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      get_xv_app_folder
+   

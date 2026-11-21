@@ -1,0 +1,21 @@
+# xv
+
+> Access to arxiv data
+
+
+## Pages
+
+- [xv](index.html.md): Access to arxiv data
+- [API reference](api.html.md): | &#96;xv&#96;   | Access to arxiv resources   |
+- [xv](_autosummary/xv.html.md): Access to arxiv resources
+- [xv.data_access](_autosummary/xv.data_access.html.md): Accessing and preparing arxiv data for the xv project.
+- [xv.util](_autosummary/xv.util.html.md): | &#96;get_xv_app_folder&#96;(name, &#92;&#42;&#91;, ensure_exists&#93;)   |    |
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-21 18:33 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+
+## Optional
+
+- [xv.md](xv.md): Complete documentation in a single file.
+
+## Build
+
+- [build_info.json](build_info.json): build provenance (commit, version, tool versions, whether the docs match the package)
