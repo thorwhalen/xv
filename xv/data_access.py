@@ -75,7 +75,7 @@ _key_template_kwargs = dict(
     from_str_funcs=dict(number=int),  # transform integer string into actual integer
 )
 _parquet_codec_end_pipe = (
-    wrap_kvs(obj_of_data=Pipe(io.BytesIO, pd.read_parquet)),  # get a dataframe
+    wrap_kvs(value_decoder=Pipe(io.BytesIO, pd.read_parquet)),  # get a dataframe
     cached_keys(keys_cache=sorted),  # sort the keys when iterating
 )
 
