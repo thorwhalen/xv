@@ -2,7 +2,9 @@
 
 Access to arxiv data
 
-To install:	```pip install xv```
+```bash
+pip install xv
+```
 
 
 # Examples
