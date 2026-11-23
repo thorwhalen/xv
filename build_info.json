@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "built_at": "2026-11-22T20:36:36Z",
+  "built_at": "2026-11-23T07:29:09Z",
   "package": {
     "name": "xv",
     "version": "0.1.4",
@@ -9,28 +9,28 @@
   },
   "git": {
     "available": true,
-    "commit": "ef769bcf961b2413a5c3df5d0ebd7148103db12f",
-    "short_commit": "ef769bc",
+    "commit": "01d39a2691ffd3bf54713a1b3db4269b045f9a93",
+    "short_commit": "01d39a2",
     "branch": "main",
     "tags": [],
     "dirty": false,
     "remote_url": "https://github.com/thorwhalen/xv",
-    "commit_url": "https://github.com/thorwhalen/xv/commit/ef769bcf961b2413a5c3df5d0ebd7148103db12f",
+    "commit_url": "https://github.com/thorwhalen/xv/commit/01d39a2691ffd3bf54713a1b3db4269b045f9a93",
     "error": null
   },
   "ci": {
     "provider": "github",
     "repository": "thorwhalen/xv",
-    "sha": "ef769bcf961b2413a5c3df5d0ebd7148103db12f",
+    "sha": "01d39a2691ffd3bf54713a1b3db4269b045f9a93",
     "sha_in_history": true,
     "ref": "refs/heads/main",
     "ref_name": "main",
-    "run_id": "45067243659",
-    "run_url": "https://github.com/thorwhalen/xv/actions/runs/45067243659",
+    "run_id": "45131223408",
+    "run_url": "https://github.com/thorwhalen/xv/actions/runs/45131223408",
     "server_url": "https://github.com"
   },
   "tools": {
-    "epythet": "0.2.23",
+    "epythet": "0.2.24",
     "sphinx": "9.1.1",
     "docutils": "0.22.4",
     "python": "3.12.16"
@@ -64,7 +64,7 @@
     "relation": "same",
     "error": null
   },
-  "reproduce": "git clone https://github.com/thorwhalen/xv && cd xv\ngit checkout ef769bcf961b2413a5c3df5d0ebd7148103db12f\npip install \"epythet==0.2.23\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
+  "reproduce": "git clone https://github.com/thorwhalen/xv && cd xv\ngit checkout 01d39a2691ffd3bf54713a1b3db4269b045f9a93\npip install \"epythet==0.2.24\"\nepythet quickstart . --ignore tests/ scrap/ examples/",
   "warnings": [],
   "alignment": {
     "aligned": true,

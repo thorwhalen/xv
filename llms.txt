@@ -5,12 +5,12 @@
 
 ## Pages
 
-- [xv](index.html.md): Access to arxiv data
+- [xv](index.html.md): Access to arxiv data: titles, abstracts and metadata for arxiv papers, as simple mappings backed by ...
 - [API reference](api.html.md): | &#96;xv&#96;   | Access to arxiv resources   |
 - [xv](_autosummary/xv.html.md): Access to arxiv resources
 - [xv.data_access](_autosummary/xv.data_access.html.md): Accessing and preparing arxiv data for the xv project.
 - [xv.util](_autosummary/xv.util.html.md): | &#96;get_xv_app_folder&#96;(name, &#92;&#42;&#91;, ensure_exists&#93;)   |    |
-- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-22 20:36 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
+- [About this build](about-this-build.html.md): This documentation was built on &#42;&#42;2026-11-23 07:29 UTC&#42;&#42; from commit &lt;a href="https://github.com/tho...
 
 ## Optional
 
