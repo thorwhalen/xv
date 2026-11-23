@@ -1,13 +1,16 @@
 # xv
 
-Access to arxiv data
+Access to arxiv data: titles, abstracts and metadata for arxiv papers, as simple mappings backed by downloaded files.
 
-To install:	```pip install xv```
+```bash
+pip install xv
+```
 
 
 # Examples
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv import *
 ```
@@ -24,6 +27,7 @@ Therefore, the following files need to be downloaded manually:
 
 You can then copy them over to the place graze will look for by doing:
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from pathlib import Path
 from xv.util import Graze
@@ -35,6 +39,7 @@ g[urls['abstracts']] = Path('ABSTRACTS_DATA_LOCAL_FILEPATH').read_bytes()
 ```
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 # from imbed.mdat.arxiv import urls
 # from pathlib import Path
@@ -45,6 +50,7 @@ g[urls['abstracts']] = Path('ABSTRACTS_DATA_LOCAL_FILEPATH').read_bytes()
 ```
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv.util import Graze
 
@@ -62,6 +68,7 @@ list(g)
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv import raw_sources
 
@@ -78,6 +85,7 @@ list(raw_sources)
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 raw = raw_sources['titles']
 list(raw)
@@ -117,6 +125,7 @@ list(raw)
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 print(raw['exampleEmbed.py'].decode())
 ```
@@ -131,6 +140,7 @@ print(raw['exampleEmbed.py'].decode())
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from InstructorEmbedding import INSTRUCTOR
 
@@ -147,6 +157,7 @@ model = INSTRUCTOR('hkunlp/instructor-xl')
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 sentence = "3D ActionSLAM: wearable person tracking in multi-floor environments"
 instruction = "Represent the Research Paper title for retrieval; Input:"
@@ -155,6 +166,7 @@ embeddings = model.encode([[instruction, sentence]])
 ```
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 print(raw['params.txt'].decode())
 ```
@@ -167,6 +179,7 @@ print(raw['params.txt'].decode())
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 print(raw['exampleEmbed.py'].decode())
 ```
@@ -185,6 +198,7 @@ print(raw['exampleEmbed.py'].decode())
 And now, we'll transform the raw store to get a convenient interface to the actual data of interest.
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 b = raw['titles_1.parquet']
 len(b)
@@ -198,6 +212,7 @@ len(b)
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv import sources  # raw store + wrapper. See parquet_codec code.
 
@@ -210,6 +225,7 @@ print(list(titles_tables))
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 titles_df = titles_tables[1]
 titles_df
@@ -316,6 +332,7 @@ titles_df
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 abstract_df = abstract_tables[1]
 abstract_df
@@ -422,6 +439,7 @@ abstract_df
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 abstract_df['doi'].values
 ```
@@ -435,6 +453,7 @@ abstract_df['doi'].values
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv import arxiv_url
 
@@ -450,6 +469,7 @@ arxiv_url(doi)
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 from xv.data_access import resource_descriptions
 resource_descriptions
@@ -468,6 +488,7 @@ resource_descriptions
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 doi = '0704.0001'
 
@@ -499,6 +520,7 @@ for resource, description in resource_descriptions.items():
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 arxiv_url(doi, 'pdf')
 ```
@@ -508,6 +530,7 @@ arxiv_url(doi, 'pdf')
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 pdf_bytes = g[arxiv_url(doi, 'pdf')]
 ```
@@ -516,6 +539,7 @@ pdf_bytes = g[arxiv_url(doi, 'pdf')]
 
 
 
+<!-- wads-docs: skip needs manually downloaded arxiv data -->
 ```python
 abstract_df.embeddings.values[0].shape
 ```
